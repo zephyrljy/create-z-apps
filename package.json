@@ -1,0 +1,51 @@
+{
+  "name": "create-z-apps",
+  "version": "1.0.0",
+  "description": "A simple CLI to create a new project with a template",
+  "type": "module",
+  "bin": {
+    "create-z-apps": "./dist/index.cjs"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "prepublishOnly": "pnpm build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "template",
+    "scaffold",
+    "generator",
+    "create-z-apps"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^25.0.9",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ]
+}
