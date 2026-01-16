@@ -1,6 +1,8 @@
-# create-shy
+# create-z-apps
 
-A simple CLI tool to scaffold new projects with templates.
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
+> A simple CLI tool to scaffold new projects with templates.
 
 ## Features
 
@@ -13,13 +15,13 @@ A simple CLI tool to scaffold new projects with templates.
 
 ```bash
 # Using npm
-npm install -g create-shy
+npm install -g create-z-apps
 
 # Using pnpm
-pnpm add -g create-shy
+pnpm add -g create-z-apps
 
 # Using yarn
-yarn global add create-shy
+yarn global add create-z-apps
 ```
 
 ## Usage
@@ -28,37 +30,34 @@ yarn global add create-shy
 
 ```bash
 # Start interactive mode
-create-shy
+create-z-apps
 
-# Or using pnpm
-pnpm create shy
-
-# Using npx
-npx create-shy
+# Or using npx
+npx create-z-apps
 ```
 
 ### Command Line Arguments
 
 ```bash
 # Create a project with interactive template selection
-create-shy my-project
+create-z-apps my-project
 
 # Create a project with specific template
-create-shy my-project -t shy-vben-vue
-create-shy my-project --template shy-unibest
+create-z-apps my-project -t shy-vben-vue
+create-z-apps my-project --template shy-unibest
 ```
 
 ### List Available Templates
 
 ```bash
-create-shy list
+create-z-apps list
 ```
 
 ## Available Templates
 
-### PC 端模板
+### PC Template
 
-**shy-vben-vue** - PC 端项目模板
+**shy-vben-vue** - PC project template
 
 - Vue 3 + TypeScript + Vite
 - Element Plus UI Framework
@@ -67,21 +66,21 @@ create-shy list
 - Axios HTTP Client
 - ESLint + Prettier
 
-### 移动端模板
+### Mobile Template
 
-**shy-unibest** - 移动端项目模板
+**shy-unibest** - Mobile project template
 
 - UniApp + Vue 3 + TypeScript
-- 支持 H5 和微信小程序
+- Support for H5 and WeChat Mini Program
 - Pinia State Management
-- 跨平台支持
+- Cross-platform support
 
 ## Examples
 
 ### Create a PC Project
 
 ```bash
-create-shy my-pc-app -t shy-vben-vue
+create-z-apps my-pc-app -t shy-vben-vue
 
 cd my-pc-app
 pnpm install
@@ -91,7 +90,7 @@ pnpm dev
 ### Create a Mobile Project
 
 ```bash
-create-shy my-mobile-app -t shy-unibest
+create-z-apps my-mobile-app -t shy-unibest
 
 cd my-mobile-app
 pnpm install
@@ -103,7 +102,7 @@ pnpm dev:mp-weixin # WeChat Mini Program development
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/zephyrljy/create-z-apps.git
 
 # Install dependencies
 pnpm install
@@ -118,16 +117,16 @@ pnpm build
 npm link
 
 # Test the CLI
-create-shy test-project
+create-z-apps test-project
 
 # List templates
-create-shy list
+create-z-apps list
 ```
 
 ## Project Structure
 
 ```
-create-shy/
+create-z-apps/
 ├── src/
 │   ├── config/
 │   │   └── templates.ts      # Template configurations
@@ -140,11 +139,11 @@ create-shy/
 │   ├── index.ts              # Entry point
 │   └── types.ts              # TypeScript types
 ├── templates/
-│   ├── shy-vben-vue/         # PC 端模板
+│   ├── shy-vben-vue/         # PC template
 │   │   ├── src/
 │   │   ├── package.json
 │   │   └── vite.config.ts
-│   └── shy-unibest/          # 移动端模板
+│   └── shy-unibest/          # Mobile template
 │       ├── src/
 │       ├── package.json
 │       └── vite.config.ts
