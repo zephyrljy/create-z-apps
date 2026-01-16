@@ -1,6 +1,7 @@
 import path from 'node:path'
 import fs from 'fs-extra'
 import inquirer from 'inquirer'
+import { execSync } from 'node:child_process'
 import type { Template } from './types.js'
 import { getTemplate, validateTemplate } from './config/templates.js'
 import { copyTemplate, updatePackageJson, updateReadme, directoryExists } from './utils/file.js'
@@ -9,6 +10,35 @@ import { printCreatingInfo, printSuccess, printNextSteps } from './utils/message
 
 // 获取 inquirer.prompt 的兼容性函数
 const prompt = (inquirer as any).default?.prompt || inquirer.prompt
+
+// GitLab 仓库地址
+const GITLAB_REPOSITORY = 'git@43.137.12.133:cbb/framework/ruoyi-basic/shy-admin-vben.git'
+
+// 从 GitLab 克隆模板
+async function cloneFromGitLab(targetDir: string, tempDir: string): Promise<void> {
+  try {
+    logInfo('正在从 GitLab 拉取模板...')
+    execSync(`git clone ${GITLAB_REPOSITORY} "${tempDir}"`, {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    })
+
+    // 删除 .git 目录
+    const gitDir = path.join(tempDir, '.git')
+    if (await fs.pathExists(gitDir)) {
+      await fs.remove(gitDir)
+    }
+
+    // 复制到目标目录
+    await fs.copy(tempDir, targetDir)
+
+    // 清理临时目录
+    await fs.remove(tempDir)
+  } catch (error) {
+    logError('从 GitLab 拉取模板失败')
+    throw error
+  }
+}
 
 export interface CreateOptions {
   projectName?: string
@@ -71,13 +101,19 @@ export async function createProject(options: CreateOptions = {}): Promise<void> 
   }
 
   const targetDir = path.resolve(process.cwd(), projectName)
-  const templateDir = path.join(__dirname, '../templates', template)
 
-  // 验证模板目录
-  if (!(await fs.pathExists(templateDir))) {
-    logError(`模板不存在：${template}`)
-    logInfo(`模板目录：${templateDir}`)
-    process.exit(1)
+  // 判断是否需要从 GitLab 拉取模板
+  const needCloneFromGitLab = template === 'shy-vben-vue'
+
+  // 如果不是从 GitLab 拉取，验证本地模板目录
+  let templateDir = ''
+  if (!needCloneFromGitLab) {
+    templateDir = path.join(__dirname, '../templates', template)
+    if (!(await fs.pathExists(templateDir))) {
+      logError(`模板不存在：${template}`)
+      logInfo(`模板目录：${templateDir}`)
+      process.exit(1)
+    }
   }
 
   // 检查目录是否已存在
@@ -97,8 +133,15 @@ export async function createProject(options: CreateOptions = {}): Promise<void> 
 
     printCreatingInfo(projectName, selectedTemplate)
 
-    // 复制模板文件到目标目录
-    await copyTemplate(templateDir, targetDir)
+    // 根据模板类型选择拉取方式
+    if (needCloneFromGitLab) {
+      // 从 GitLab 克隆模板
+      const tempDir = path.join(process.cwd(), `.temp-${Date.now()}`)
+      await cloneFromGitLab(targetDir, tempDir)
+    } else {
+      // 从本地复制模板
+      await copyTemplate(templateDir, targetDir)
+    }
 
     // 替换 package.json 中的项目名称
     await updatePackageJson(targetDir, projectName)
