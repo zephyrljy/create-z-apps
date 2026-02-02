@@ -1,6 +1,6 @@
 {
   "name": "create-z-apps",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple CLI to create a new project with a template",
   "type": "module",
   "bin": {
