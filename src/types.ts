@@ -3,6 +3,7 @@ export interface Template {
   value: string
   description: string
   type: 'pc' | 'mobile'
+  repository?: string
 }
 
 export interface CreateOptions {
