@@ -15,6 +15,13 @@ export const TEMPLATES: Template[] = [
     repository: 'git@github.com:zephyrljy/shy-unibest.git',
     type: 'mobile',
   },
+  {
+    name: 'react-one',
+    value: 'react-one',
+    description: 'PC 端项目模板 (基于 React)',
+    repository: 'git@github.com:zephyrljy/react-one.git',
+    type: 'pc',
+  },
 ]
 
 export function getTemplate(value: string): Template | undefined {

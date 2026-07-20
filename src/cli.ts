@@ -13,7 +13,7 @@ export function createCli(): Command {
     .argument("[project-name]", "Name of the project")
     .option(
       "-t, --template <template>",
-      "Template to use (shy-vben-vue | shy-unibest)"
+      "Template to use (shy-vben-vue | shy-unibest | react-one)"
     )
     .action(async (projectName, options) => {
       await createProject({

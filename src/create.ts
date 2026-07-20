@@ -3,7 +3,12 @@ import fs from "fs-extra";
 import inquirer from "inquirer";
 import { execSync } from "node:child_process";
 import type { Template } from "./types.js";
-import { getTemplate, validateTemplate } from "./config/templates.js";
+import {
+  getTemplate,
+  getTemplateValues,
+  TEMPLATES,
+  validateTemplate,
+} from "./config/templates.js";
 import {
   copyTemplate,
   updatePackageJson,
@@ -24,26 +29,17 @@ const prompt = (inquirer as any).default?.prompt || inquirer.prompt;
 async function cloneFromRepository(
   repository: string,
   targetDir: string,
-  tempDir: string,
 ): Promise<void> {
   try {
     logInfo("正在从远程仓库拉取模板...");
-    execSync(`git clone ${repository} "${tempDir}"`, {
+    execSync(`git clone ${repository} "${targetDir}"`, {
       stdio: "inherit",
       cwd: process.cwd(),
     });
-
-    // 删除 .git 目录
-    const gitDir = path.join(tempDir, ".git");
-    if (await fs.pathExists(gitDir)) {
-      await fs.remove(gitDir);
-    }
-
-    // 复制到目标目录
-    await fs.copy(tempDir, targetDir);
-
-    // 清理临时目录
-    await fs.remove(tempDir);
+    execSync("git remote rename origin upstream", {
+      stdio: "inherit",
+      cwd: targetDir,
+    });
   } catch (error) {
     logError("从远程仓库拉取模板失败");
     throw error;
@@ -83,23 +79,16 @@ export async function createProject(
       type: "list",
       name: "template",
       message: "请选择模板：",
-      choices: [
-        {
-          name: "shy-vben-vue - PC 端项目模板 (基于 Vue 3 + Vite + TypeScript)",
-          value: "shy-vben-vue",
-        },
-        {
-          name: "shy-unibest - 移动端项目模板 (基于 UniApp + Vue 3)",
-          value: "shy-unibest",
-        },
-      ],
+      choices: TEMPLATES.map(({ name, value, description }) => ({
+        name: `${name} - ${description}`,
+        value,
+      })),
     });
   } else {
     // 验证指定的模板是否存在
     if (!validateTemplate(template)) {
       logError(`无效的模板：${template}`);
-      const validTemplates = ["shy-vben-vue", "shy-unibest"];
-      logInfo(`可用模板：${validTemplates.join(", ")}`);
+      logInfo(`可用模板：${getTemplateValues().join(", ")}`);
       process.exit(1);
     }
   }
@@ -140,8 +129,7 @@ export async function createProject(
     // 根据模板类型选择拉取方式
     if (selectedTemplate.repository) {
       // 从远程仓库克隆模板
-      const tempDir = path.join(process.cwd(), `.temp-${Date.now()}`);
-      await cloneFromRepository(selectedTemplate.repository, targetDir, tempDir);
+      await cloneFromRepository(selectedTemplate.repository, targetDir);
     } else {
       // 从本地复制模板
       const templateDir = path.join(__dirname, "../templates", template);

@@ -23,7 +23,7 @@ export function printNextSteps(
   logGray(`  1. cd ${projectName}`)
   logGray(`  2. pnpm install`)
 
-  if (template === 'shy-vben-vue') {
+  if (template === 'shy-vben-vue' || template === 'react-one') {
     logGray(`  3. pnpm dev\n`)
   } else if (template === 'shy-unibest') {
     logGray(`  3. pnpm dev:h5\n`)
