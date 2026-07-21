@@ -130,6 +130,16 @@ export async function createProject(
     if (selectedTemplate.repository) {
       // 从远程仓库克隆模板
       await cloneFromRepository(selectedTemplate.repository, targetDir);
+      if (template === "react-one") {
+        execSync("git remote set-url --push upstream DISABLED", {
+          stdio: "inherit",
+          cwd: targetDir,
+        });
+        execSync("git branch --unset-upstream main", {
+          stdio: "inherit",
+          cwd: targetDir,
+        });
+      }
     } else {
       // 从本地复制模板
       const templateDir = path.join(__dirname, "../templates", template);
